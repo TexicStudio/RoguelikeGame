@@ -57,6 +57,13 @@ public class New_game_stages : MonoBehaviour
 
 
     [Space]
+    [Header("Количество карт истории")]
+    public Button up_story_max_num;
+    public Button down_story_max_num;
+    public InputField story_map_num_text;
+
+
+    [Space]
     [Header("   данные")]
     public string Title = "";
     public string FileName = "";
@@ -95,7 +102,7 @@ public class New_game_stages : MonoBehaviour
 
     private string story_map_name = "";
     private int story_map_num = 0;
-    private int story_map_num_max = 3;
+    public int story_map_num_max = 2;//private int story_map_num_max = 2;
 
 
     private int dungeon_num = 0;
@@ -265,6 +272,36 @@ public class New_game_stages : MonoBehaviour
                 break;
         }
     }
+
+
+    public void Edit_story_map_num()
+    {
+        story_map_num_max = Convert.ToInt32(story_map_num_text.text);
+    }
+
+    public void Up_story_map_num_Click()
+    {
+        story_map_num_max = Convert.ToInt32(story_map_num_text.text);
+        story_map_num_max = story_map_num_max + 1;
+        story_map_num_text.text = "" + story_map_num_max;
+
+        Edit_story_map_num();
+    }
+
+    public void Down_story_map_num_Click()
+    {
+        story_map_num_max = Convert.ToInt32(story_map_num_text.text);
+        story_map_num_max = story_map_num_max - 1;
+
+        if(story_map_num_max < 0)
+        {
+            story_map_num_max = 0;
+        }
+
+        story_map_num_text.text = "" + story_map_num_max;
+
+        Edit_story_map_num();
+    }
     #endregion
 
 
@@ -394,11 +431,19 @@ public class New_game_stages : MonoBehaviour
     {
         bool start_add = false;
 
+        Edit_story_map_num();
+
         if ((basic_map_panel_list.Count > 0) && (dungeon_map_panel_list.Count > 0))
         {
-            if (basic_map_panel_list.Count >= 3)
+            Debug.Log("4_New_game_stages --- 0  ["+ basic_map_panel_list.Count+ " = " + story_map_num_max + "]");
+            if (basic_map_panel_list.Count >= story_map_num_max)
             {
-                start_add = true;
+                Debug.Log("4_New_game_stages --- 1");
+                if (story_map_num_max >= 1)
+                {
+                    Debug.Log("4_New_game_stages --- 2");
+                    start_add = true;
+                }
             }
         }
 
@@ -459,6 +504,48 @@ public class New_game_stages : MonoBehaviour
         story_map_name = map_name;
 
         Debug.Log("4_New_game_stages --- Story[" + story_map_name + "] generation");
+
+
+        
+        if (Story_info.Map_data[map_name].short_info.region_protagonist_start_point.Count > 0)
+        {
+            int temp_region_protagonist_start_point_num = 0;
+
+            point_list = Story_info.Map_data[map_name].short_info.region_protagonist_start_point.Keys.ToList();
+
+            if (story_map_num < 1)
+            {
+                temp_region_protagonist_start_point_num = temp_rnd.Next(0, point_list.Count);
+
+                Story_info.protagonist_position_x = Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].position_x;
+                Story_info.protagonist_position_y = Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].position_y;
+            }
+
+            if (point_list.Count > 0)
+            {
+                for (temp_region_protagonist_start_point_num = 0; temp_region_protagonist_start_point_num < point_list.Count; temp_region_protagonist_start_point_num++)
+                {
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing_active = 0;
+
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.id = 0;
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.editor_id = "";
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.editor_type = "";
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.level = 0;
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.image_id = 0;
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.object_id = 0;
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.object_editor_id = "";
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.object_editor_type = "";
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.object_level = 0;
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.object_image_id = 0;
+
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].default_active = 1;
+
+                    Story_info.Map_data[map_name].short_info.region_protagonist_start_point.Remove(point_list[temp_region_protagonist_start_point_num]);
+                }
+            }
+            point_list.Clear();
+        }
+        
 
 
         if (story_map_num_max > 1)
@@ -649,6 +736,38 @@ public class New_game_stages : MonoBehaviour
         }
 
 
+        if (Story_info.Map_data[map_name].short_info.region_protagonist_start_point.Count > 0)
+        {
+            int temp_region_protagonist_start_point_num = 0;
+
+            point_list = Story_info.Map_data[map_name].short_info.region_protagonist_start_point.Keys.ToList();
+
+            if (point_list.Count > 0)
+            {
+                for (temp_region_protagonist_start_point_num = 0; temp_region_protagonist_start_point_num < point_list.Count; temp_region_protagonist_start_point_num++)
+                {
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing_active = 0;
+
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.id = 0;
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.editor_id = "";
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.editor_type = "";
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.level = 0;
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.image_id = 0;
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.object_id = 0;
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.object_editor_id = "";
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.object_editor_type = "";
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.object_level = 0;
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.object_image_id = 0;
+
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].default_active = 1;
+
+                    Story_info.Map_data[map_name].short_info.region_protagonist_start_point.Remove(point_list[temp_region_protagonist_start_point_num]);
+                }
+            }
+            point_list.Clear();
+        }
+
+
         if (Story_info.Map_data[map_name].short_info.region_dungeon_exit.Count > 0)
         {
             point_list = Story_info.Map_data[map_name].short_info.region_dungeon_exit.Keys.ToList();
@@ -764,7 +883,7 @@ public class New_game_stages : MonoBehaviour
 
         int temp_transition_num = 0;
 
-        if (dungeon_transition_list.Count >= region_dungeon_exit.Count)
+        if (dungeon_transition_list.Count > region_dungeon_exit.Count)
         {
             action_name = "";
 
@@ -864,6 +983,39 @@ public class New_game_stages : MonoBehaviour
 
             point_list.Clear();
         }
+
+
+        if (Story_info.Map_data[map_name].short_info.region_protagonist_start_point.Count > 0)
+        {
+            int temp_region_protagonist_start_point_num = 0;
+
+            point_list = Story_info.Map_data[map_name].short_info.region_protagonist_start_point.Keys.ToList();
+
+            if (point_list.Count > 0)
+            {
+                for (temp_region_protagonist_start_point_num = 0; temp_region_protagonist_start_point_num < point_list.Count; temp_region_protagonist_start_point_num++)
+                {
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing_active = 0;
+
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.id = 0;
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.editor_id = "";
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.editor_type = "";
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.level = 0;
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.image_id = 0;
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.object_id = 0;
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.object_editor_id = "";
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.object_editor_type = "";
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.object_level = 0;
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.object_image_id = 0;
+
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].default_active = 1;
+
+                    Story_info.Map_data[map_name].short_info.region_protagonist_start_point.Remove(point_list[temp_region_protagonist_start_point_num]);
+                }
+            }
+            point_list.Clear();
+        }
+
 
         point_list = Story_info.Map_data[map_name].short_info.region_dungeon_exit.Keys.ToList();
         temp_transition_num = temp_rnd.Next(0, point_list.Count);
@@ -980,6 +1132,38 @@ public class New_game_stages : MonoBehaviour
                 region_teleportation.Add(new_teleport);
             }
 
+            point_list.Clear();
+        }
+
+
+        if (Story_info.Map_data[map_name].short_info.region_protagonist_start_point.Count > 0)
+        {
+            int temp_region_protagonist_start_point_num = 0;
+
+            point_list = Story_info.Map_data[map_name].short_info.region_protagonist_start_point.Keys.ToList();
+
+            if (point_list.Count > 0)
+            {
+                for (temp_region_protagonist_start_point_num = 0; temp_region_protagonist_start_point_num < point_list.Count; temp_region_protagonist_start_point_num++)
+                {
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing_active = 0;
+
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.id = 0;
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.editor_id = "";
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.editor_type = "";
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.level = 0;
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.image_id = 0;
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.object_id = 0;
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.object_editor_id = "";
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.object_editor_type = "";
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.object_level = 0;
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].cell_stuffing.object_image_id = 0;
+
+                    Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].default_active = 1;
+
+                    Story_info.Map_data[map_name].short_info.region_protagonist_start_point.Remove(point_list[temp_region_protagonist_start_point_num]);
+                }
+            }
             point_list.Clear();
         }
 

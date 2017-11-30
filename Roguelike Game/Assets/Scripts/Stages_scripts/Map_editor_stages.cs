@@ -26,6 +26,12 @@ public class Map_editor_stages : MonoBehaviour
 
 
     [Space]
+    [Header("   Главный герой")]
+    public GameObject protagonist_gameObject;
+    public Transform protagonist_Transform;
+    
+
+    [Space]
     [Header("   данные")]
     public int cell_row_min = 1;
     public int cell_row_max;
@@ -166,6 +172,9 @@ public class Map_editor_stages : MonoBehaviour
         maps.Add(Main.selected_map, new_map);
 
         maps[Main.selected_map].gameObject.SetActive(false);
+
+
+        protagonist_Transform.position = new Vector2((Main.Story_info["0"].protagonist_position_x - 1) * 240, (Main.Story_info["0"].protagonist_position_y - 1) * 240);
 
 
         map_name_list.RemoveAt(0);
