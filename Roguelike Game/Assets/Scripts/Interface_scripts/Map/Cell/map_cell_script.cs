@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public class map_cell_script : MonoBehaviour
 {
+    public int cell_type;
+    [Space]
     [Header("   основные элементы")]
     public GameObject main_object;
     public Transform main_transform;
@@ -131,6 +133,14 @@ public class map_cell_script : MonoBehaviour
     {
         //Debug.Log("map_cell_script - " + temp_cell_info.address);
 
+        cell_address = "" + temp_cell_info.address;
+
+        main_object.name = "" + temp_cell_info.address;
+
+
+        cell_type = temp_cell_info.cell_type;
+        
+
         Display_base(temp_cell_info.cell_base_id);
 
         Display_decoration(temp_cell_info.cell_decoration_id);
@@ -142,10 +152,6 @@ public class map_cell_script : MonoBehaviour
         Display_default_bestiary(temp_cell_info.default_bestiary);
 
         Display_default_bestiary_additional_stuffing(temp_cell_info.default_bestiary);
-
-        cell_address = "" + temp_cell_info.address;
-
-        main_object.name = "" + temp_cell_info.id + " " + temp_cell_info.address;
 
         temp_cell_info = null;
     }
