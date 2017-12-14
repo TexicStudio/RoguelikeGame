@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/0_Preloader_page.unity
+- path: Assets/Scenes/5_Game.unity
   isLoaded: 1
   isActive: 1

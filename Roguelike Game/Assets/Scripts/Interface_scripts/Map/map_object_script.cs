@@ -95,7 +95,7 @@ public class map_object_script : MonoBehaviour
         begin_row = new_begin_row;
         begin_column = new_begin_column;
 
-        end_row = new_end_row; 
+        end_row = new_end_row;
         end_column = new_end_column;
 
         //end_row = Main.Map_info[map_name].map_height;
@@ -145,7 +145,7 @@ public class map_object_script : MonoBehaviour
                 pin_x = 1;
                 pin_y = pin_y + 1;
 
-                if(pin_y > row_max)
+                if (pin_y > row_max)
                 {
                     pin_y = 1;
                 }
@@ -164,7 +164,7 @@ public class map_object_script : MonoBehaviour
         if (step_num >= Main.Story_info["0"].Map_data[map_name].map_cell_number)
         {
             step_pause = false;
-           //Debug.Log("Создание клеток карты завершено");
+            //Debug.Log("Создание клеток карты завершено");
             //main_object.SetActive(true);
             //End_map_data_generation();
         }
@@ -206,12 +206,13 @@ public class map_object_script : MonoBehaviour
                 new_cell._y = temp_cell_info.position_y;
 
 
-               //Debug.Log("map_object_script - " + temp_cell_info.address);
+                //new_cell.Passability = temp_cell_info.Passability;
+                //Debug.Log("map_object_script - " + temp_cell_info.address);
 
 
                 new_cell.Display_cell(temp_cell_info);
 
-                
+
                 new_cell.main_transform.localScale = new Vector3(Main.scale_cell, Main.scale_cell, 1);
 
                 new_cell_object.transform.SetParent(main_map.transform);
@@ -219,6 +220,44 @@ public class map_object_script : MonoBehaviour
                 pos_x = 240 * Main.scale_cell * (temp_cell_info.position_x - 1);
                 pos_y = 240 * Main.scale_cell * (temp_cell_info.position_y - 1);
 
+
+                //здесь будет прописываться наполнение клетки тагами
+                //if (temp_cell_info.cell_type == 1)
+                //{
+                //new_cell_object.tag = "Passable Obj";
+                string message = new_cell_object.name + " " + temp_cell_info.cell_stuffing_active + ", " + temp_cell_info.cell_stuffing.editor_type;
+                if (temp_cell_info.cell_stuffing_active == 1)
+                {
+                    switch (temp_cell_info.cell_stuffing.editor_type)
+                    {
+                        case "bestiary":
+                            {
+                                int dbMonsterId = temp_cell_info.cell_stuffing.id;
+                                Bestiary_Data monterInfo = Main.db_data.bestiary_data[dbMonsterId];
+                                Debug.Log(monterInfo.bestiary_name);
+                                new_cell_object.tag = "Monster Cell";
+                                break;
+                            }
+                        case "relief":
+                            {
+                                new_cell_object.tag = "Resources";
+                                break;
+                            }
+                    }
+                }
+                else
+                {
+                    if (temp_cell_info.cell_type == 0)
+                    {
+                        new_cell_object.tag = "Not Passable Obj";
+                    }
+                }
+                Debug.Log(message);
+                //}
+                //else
+                //{
+                //    new_cell_object.tag = "Not Passable Obj";
+                //}
 
 
                 new_cell.main_transform.localPosition = new Vector3(pos_x, pos_y, 0);
@@ -228,7 +267,7 @@ public class map_object_script : MonoBehaviour
 
                 cell.Add(new_cell_address, new_cell);
 
-               //Debug.Log(new_cell_address + " СОЗДАНА ");
+                //Debug.Log(new_cell_address + " СОЗДАНА ");
             }
             //else
             //{

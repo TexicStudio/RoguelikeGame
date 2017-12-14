@@ -293,7 +293,7 @@ public class New_game_stages : MonoBehaviour
         story_map_num_max = Convert.ToInt32(story_map_num_text.text);
         story_map_num_max = story_map_num_max - 1;
 
-        if(story_map_num_max < 0)
+        if (story_map_num_max < 0)
         {
             story_map_num_max = 0;
         }
@@ -337,7 +337,7 @@ public class New_game_stages : MonoBehaviour
                 new_story_map.protagonist_position_x = savedMap.protagonist_position_x;
                 new_story_map.protagonist_position_y = savedMap.protagonist_position_y;
 
-                
+
                 new_story_map.short_info.relief = savedMap.short_info.relief;
 
                 new_story_map.short_info.dungeon = savedMap.short_info.dungeon;
@@ -410,7 +410,7 @@ public class New_game_stages : MonoBehaviour
                 Start_region_teleportation_generation();
                 break;
             case "Next_scene_open":
-                if(delay_num > 0)
+                if (delay_num > 0)
                 {
                     delay_num -= Time.deltaTime;
                     change_action = true;
@@ -435,7 +435,7 @@ public class New_game_stages : MonoBehaviour
 
         if ((basic_map_panel_list.Count > 0) && (dungeon_map_panel_list.Count > 0))
         {
-            Debug.Log("4_New_game_stages --- 0  ["+ basic_map_panel_list.Count+ " = " + story_map_num_max + "]");
+            Debug.Log("4_New_game_stages --- 0  [" + basic_map_panel_list.Count + " = " + story_map_num_max + "]");
             if (basic_map_panel_list.Count >= story_map_num_max)
             {
                 Debug.Log("4_New_game_stages --- 1");
@@ -506,7 +506,7 @@ public class New_game_stages : MonoBehaviour
         Debug.Log("4_New_game_stages --- Story[" + story_map_name + "] generation");
 
 
-        
+
         if (Story_info.Map_data[map_name].short_info.region_protagonist_start_point.Count > 0)
         {
             int temp_region_protagonist_start_point_num = 0;
@@ -515,10 +515,10 @@ public class New_game_stages : MonoBehaviour
 
             if (story_map_num < 1)
             {
-                temp_region_protagonist_start_point_num = temp_rnd.Next(0, point_list.Count);
+                //temp_region_protagonist_start_point_num = temp_rnd.Next(0, point_list.Count);
 
-                Story_info.protagonist_position_x = Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].position_x;
-                Story_info.protagonist_position_y = Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].position_y;
+                Story_info.protagonist_position_x = 3;//Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].position_x;
+                Story_info.protagonist_position_y = 4;//Story_info.Map_data[map_name].cell_info[point_list[temp_region_protagonist_start_point_num]].position_y;
             }
 
             if (point_list.Count > 0)
@@ -545,7 +545,7 @@ public class New_game_stages : MonoBehaviour
             }
             point_list.Clear();
         }
-        
+
 
 
         if (story_map_num_max > 1)
@@ -655,7 +655,7 @@ public class New_game_stages : MonoBehaviour
         }
 
         //Debug.Log("New_game_stages --- Story_info.Map_data[map_name].short_info.dungeon_transition = " + Story_info.Map_data[map_name].short_info.dungeon_transition.Count + "   " + dungeon_transition_list.Count);
-        
+
         if (story_map_num_max > 1)
         {
             story_map_num = story_map_num + 1;
@@ -795,7 +795,7 @@ public class New_game_stages : MonoBehaviour
 
             Story_info.Map_data[map_name].cell_info[point_list[temp_transition_num]].cell_stuffing.object_editor_id = end_dungeon_transition_list[story_map_num + 1].map_name;
             Story_info.Map_data[map_name].cell_info[point_list[temp_transition_num]].cell_stuffing.object_editor_type = end_dungeon_transition_list[story_map_num + 1].cell_address;
-            
+
             //Debug.Log("map[ " + end_dungeon_transition_list[story_map_num + 1].map_name + " ].cell[ " + end_dungeon_transition_list[story_map_num + 1].cell_address + " ] --> map[ " + map_name + " ].cell[ " + point_list[temp_transition_num] + " ]");
 
             point_list.RemoveAt(temp_transition_num);
@@ -831,7 +831,7 @@ public class New_game_stages : MonoBehaviour
 
             Story_info.Map_data[map_name].cell_info[point_list[temp_transition_num]].cell_stuffing.object_editor_id = start_dungeon_transition_list[story_map_num].map_name;
             Story_info.Map_data[map_name].cell_info[point_list[temp_transition_num]].cell_stuffing.object_editor_type = start_dungeon_transition_list[story_map_num].cell_address;
-            
+
             //Debug.Log("map[ " + start_dungeon_transition_list[story_map_num].map_name + " ].cell[ " + start_dungeon_transition_list[story_map_num].cell_address + " ] --> map[ " + map_name + " ].cell[ " + point_list[temp_transition_num] + " ]");
 
             point_list.RemoveAt(temp_transition_num);
@@ -1239,7 +1239,7 @@ public class New_game_stages : MonoBehaviour
         action_name = "Loading_map_story_teleportation";
 
         story_map_num = 0;
-        
+
         if (region_teleportation.Count > 0)
         {
             Story_region_teleportation_generation();
@@ -1259,7 +1259,7 @@ public class New_game_stages : MonoBehaviour
 
         Debug.Log("4_New_game_stages --- Story_teleportation[" + region_teleportation.Count + "] generation");
 
-        if(region_teleportation.Count > 1)
+        if (region_teleportation.Count > 1)
         {
             temp_transition_num = temp_rnd.Next(0, region_teleportation.Count);
         }

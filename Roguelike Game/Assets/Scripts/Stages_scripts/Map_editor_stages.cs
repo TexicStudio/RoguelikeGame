@@ -29,7 +29,7 @@ public class Map_editor_stages : MonoBehaviour
     [Header("   Главный герой")]
     public GameObject protagonist_gameObject;
     public Transform protagonist_Transform;
-    
+
 
     [Space]
     [Header("   данные")]
@@ -61,13 +61,13 @@ public class Map_editor_stages : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        Debug.Log("----------------------------------------------------------------");
-        Debug.Log("5_Map_Editor");
-        Debug.Log("----------------------------------------------------------------");
+        //Debug.Log("----------------------------------------------------------------");
+        //Debug.Log("5_Map_Editor");
+        //Debug.Log("----------------------------------------------------------------");
 
-        Main.action_name = "";
+        //Main.action_name = "";
 
-        Create_scene();
+        //Create_scene();
     }
 
 
@@ -111,7 +111,7 @@ public class Map_editor_stages : MonoBehaviour
 
         start_create = true;
 
-        
+
         foreach (KeyValuePair<string, Story_map_Data> story_map_info in Main.Story_info["0"].Map_data)
         {
             //Create_map(story_map_info.Key, story_map_info.Value);
@@ -141,7 +141,7 @@ public class Map_editor_stages : MonoBehaviour
 
     public void Create_map(string temp_map_name, Story_map_Data new_map_data)
     {
-        if(start_create == true)
+        if (start_create == true)
         {
             start_create = false;
 
@@ -160,12 +160,14 @@ public class Map_editor_stages : MonoBehaviour
 
         new_map.main_transform.localPosition = new Vector3(0, 0, 0);
 
-
+        
         cell_row_min = 1;
         cell_row_max = new_map_data.map_height;
+        
 
         cell_column_min = 1;
         cell_column_max = new_map_data.map_width;
+
 
         new_map.Create_map(Main.selected_map, cell_row_min, cell_row_max, cell_column_min, cell_column_max, maps_container.cell_row_max, maps_container.cell_column_max);
 
@@ -188,7 +190,7 @@ public class Map_editor_stages : MonoBehaviour
     {
         if (instruments_panel.scale_100.isOn == true)
         {
-            if(Main.scale_cell != 1.0f)
+            if (Main.scale_cell != 1.0f)
             {
                 movment_scale = Main.scale_cell - 1.0f;
                 movment_pos_x = Main_Canvas_RectTransform.position.x * movment_scale;

@@ -35,9 +35,14 @@ public class editor_cell_script : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-
+        address_x = transform.GetChild(0).Find("_x coord").Find("_x").gameObject;
+        address_x_rectTransform = address_x.GetComponent<RectTransform>();
+        address_x_text = address_x.transform.GetChild(0).GetComponent<Text>();
+        address_y = transform.GetChild(0).Find("_y coord").Find("_y").gameObject;
+        address_y_rectTransform = address_y.GetComponent<RectTransform>();
+        address_y_text = address_y.transform.GetChild(0).GetComponent<Text>();
     }
-    
+
 
 
 
@@ -79,7 +84,7 @@ public class editor_cell_script : MonoBehaviour
 
         Address_x_resize(position_x);
     }
-    
+
     private void Address_x_resize(int position_x)
     {
         address_x_text.text = "" + position_x;
