@@ -27,16 +27,16 @@ public class Loading_objects_stages : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        //Create_scene();
+        Create_scene();
     }
 
     public void Create_scene()
     {
-        //mask_progress_bar.GetComponent<RectTransform>().sizeDelta = new Vector2(0, mask_progress_bar.GetComponent<RectTransform>().sizeDelta.y);
+        mask_progress_bar.GetComponent<RectTransform>().sizeDelta = new Vector2(0, mask_progress_bar.GetComponent<RectTransform>().sizeDelta.y);
 
-        //mask_bar_size_step_num = 0;
-        //mask_progress_bar.GetComponent<RectTransform>().sizeDelta = new Vector2((mask_bar_size_step_num * mask_bar_size_step), mask_progress_bar.GetComponent<RectTransform>().sizeDelta.y);
-        //loading_text.text = "Подключение к БД";
+        mask_bar_size_step_num = 0;
+        mask_progress_bar.GetComponent<RectTransform>().sizeDelta = new Vector2((mask_bar_size_step_num * mask_bar_size_step), mask_progress_bar.GetComponent<RectTransform>().sizeDelta.y);
+        loading_text.text = "Подключение к БД";
 
         Data_Base.Connection();
         
@@ -44,7 +44,7 @@ public class Loading_objects_stages : MonoBehaviour
     }
 
     #region Подсчет колисечтва карт в БД, и загрузка списка карт, если их больше 0
-    public void Map_list_count()
+    private void Map_list_count()
     {
         mask_bar_size_step_num = mask_bar_size_step_num + 1;
         mask_progress_bar.GetComponent<RectTransform>().sizeDelta = new Vector2((mask_bar_size_step_num * mask_bar_size_step), mask_progress_bar.GetComponent<RectTransform>().sizeDelta.y);
@@ -697,18 +697,17 @@ public class Loading_objects_stages : MonoBehaviour
 
         loading_text.text = "Загрузка Stuff";
 
-        string sqlQuery = "SELECT stuff.id, stuff.type_id, stuff_type.type_name_ru, stuff.class_id, stuff_class.class_name_ru, stuff.stuff_name, stuff.image_id, image.image_name, stuff.level, " +
-        "stuff.bestiary_level_min, stuff.bestiary_level_max, stuff.experience_min, stuff.experience_max, stuff.money_min, stuff.money_max, stuff.damage_d, stuff.damage_min, stuff.damage_max, " +
-        "stuff.damage_bonus_min, stuff.damage_bonus_max, stuff.magic_damage_d, stuff.magic_damage_min, stuff.magic_damage_max, stuff.magic_damage_bonus_min, stuff.magic_damage_bonus_max, " +
-        "stuff.power_min, stuff.power_max, stuff.agility_min, stuff.agility_max, stuff.physique_min, stuff.physique_max, stuff.crit_chance_d, stuff.crit_chance_min, stuff.crit_chance_max, " +
-        "stuff.crit_chance_bonus_min, stuff.crit_chance_bonus_max, stuff.crit_damage_bonus_min, stuff.crit_damage_bonus_max, stuff.initiative_d, stuff.initiative_min, stuff.initiative_max, " +
-        "stuff.initiative_bonus_min, stuff.initiative_bonus_max, stuff.health_regeneration_min, stuff.health_regeneration_max, stuff.penetration_min, stuff.penetration_max, " +
-        "stuff.penetration_bonus_min, stuff.penetration_bonus_max, stuff.protection_min, stuff.protection_max, stuff.protection_bonus_min, stuff.protection_bonus_max, " +
-        "stuff.magic_protection_min, stuff.magic_protection_max, stuff.health_min, stuff.health_max, stuff.accuracy_min, stuff.accuracy_max, stuff.lubricity_min, stuff.lubricity_max, " +
-        "stuff.satiety_min, stuff.satiety_max, stuff.endurance_min, stuff.endurance_max, stuff.robustness_min, stuff.robustness_max, stuff.price_min, stuff.price_max, stuff.cooldown, " +
-        "stuff.duration, stuff.level_improvement, stuff.ability_id, stuff_abilities.ability_name, stuff_abilities.game_id, stuff_abilities.image_id, stuff_abilities.description, stuff.description " +
-        "FROM stuff , stuff_type , stuff_class , image , stuff_abilities " +
-        " WHERE stuff.type_id = stuff_type.id AND stuff.class_id = stuff_class.id AND stuff.image_id = image.id AND stuff.ability_id = stuff_abilities.id";
+        string sqlQuery = "SELECT stuff.id, stuff.type_id, stuff_type.type_name_ru, stuff.class_id, stuff_class.class_name_ru, stuff.stuff_name, " +
+            "stuff.image_id, image.image_name, stuff.phys_damage_min, stuff.phys_damage_max, stuff.magic_damage_min, stuff.magic_damage_max, " +
+            "stuff.strength_min, stuff.strength_max, stuff.agility_min, stuff.agility_max, stuff.vitality_min, stuff.vitality_max, " +
+            "stuff.intelligence_min, stuff.intelligence_max, stuff.all_stats_min, stuff.all_stats_max, stuff.crit_chance_min_p, stuff.crit_chance_max_p, " +
+            "stuff.crit_power_min_p, stuff.crit_power_max_p, stuff.initiative_min, stuff.initiative_max, stuff.health_regeneration_min_p, stuff.health_regeneration_max_p, " +
+            "stuff.penetration_min_p, stuff.penetration_max_p, stuff.phys_armor_min_p, stuff.phys_armor_max_p, stuff.magic_armor_min, stuff.magic_armor_max, " +
+            "stuff.health_min_p, stuff.health_max_p, stuff.evasion_min, stuff.evasion_max, stuff.close_combat_dmg_min, stuff.close_combat_dmg_max, " +
+            "stuff.bleed_dmg_min, stuff.bleed_dmg_max, stuff.satiety_min, stuff.satiety_max, stuff.endurance_min, stuff.endurance_max, stuff.stackable, " +
+            "stuff.durability, stuff.price, stuff.cooldown, stuff.duration, stuff.ability_id, stuff.description " +
+            "FROM stuff , stuff_class , stuff_type , image " +
+            "WHERE stuff.type_id = stuff_type.id AND stuff.class_id = stuff_class.id AND stuff.image_id = image.id";
         sql_data = Data_Base.SQL_Query(sqlQuery);
         while (sql_data.Read())
         {
@@ -731,111 +730,77 @@ public class Loading_objects_stages : MonoBehaviour
             sql_num = sql_num + 1;
             Stuff_data.image_name = sql_data.GetString(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.level = sql_data.GetInt32(sql_num);
+            Stuff_data.phys_damage_min = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.bestiary_level_min = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Stuff_data.bestiary_level_max = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Stuff_data.experience_min = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Stuff_data.experience_max = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Stuff_data.money_min = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Stuff_data.money_max = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Stuff_data.damage_d = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Stuff_data.damage_min = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Stuff_data.damage_max = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Stuff_data.damage_bonus_min = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Stuff_data.damage_bonus_max = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Stuff_data.magic_damage_d = sql_data.GetInt32(sql_num);
+            Stuff_data.phys_damage_max = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
             Stuff_data.magic_damage_min = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
             Stuff_data.magic_damage_max = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.magic_damage_bonus_min = sql_data.GetInt32(sql_num);
+            Stuff_data.strength_min = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.magic_damage_bonus_max = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Stuff_data.power_min = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Stuff_data.power_max = sql_data.GetInt32(sql_num);
+            Stuff_data.strength_max = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
             Stuff_data.agility_min = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
             Stuff_data.agility_max = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.physique_min = sql_data.GetInt32(sql_num);
+            Stuff_data.vitality_min = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.physique_max = sql_data.GetInt32(sql_num);
+            Stuff_data.vitality_max = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.crit_chance_d = sql_data.GetInt32(sql_num);
+            Stuff_data.intelligence_min = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.crit_chance_min = sql_data.GetInt32(sql_num);
+            Stuff_data.intelligence_max = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.crit_chance_max = sql_data.GetInt32(sql_num);
+            Stuff_data.all_stats_min = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.crit_chance_bonus_min = sql_data.GetInt32(sql_num);
+            Stuff_data.all_stats_max = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.crit_chance_bonus_max = sql_data.GetInt32(sql_num);
+            Stuff_data.crit_chance_min_p = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.crit_damage_bonus_min = sql_data.GetInt32(sql_num);
+            Stuff_data.crit_chance_max_p = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.crit_damage_bonus_max = sql_data.GetInt32(sql_num);
+            Stuff_data.crit_power_min_p = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.initiative_d = sql_data.GetInt32(sql_num);
+            Stuff_data.crit_power_max_p = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
             Stuff_data.initiative_min = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
             Stuff_data.initiative_max = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.initiative_bonus_min = sql_data.GetInt32(sql_num);
+            Stuff_data.health_regeneration_min_p = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.initiative_bonus_max = sql_data.GetInt32(sql_num);
+            Stuff_data.health_regeneration_max_p = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.health_regeneration_min = sql_data.GetInt32(sql_num);
+            Stuff_data.penetration_min_p = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.health_regeneration_max = sql_data.GetInt32(sql_num);
+            Stuff_data.penetration_max_p = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.penetration_min = sql_data.GetInt32(sql_num);
+            Stuff_data.phys_armor_min_p = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.penetration_max = sql_data.GetInt32(sql_num);
+            Stuff_data.phys_armor_max_p = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.penetration_bonus_min = sql_data.GetInt32(sql_num);
+            Stuff_data.magic_armor_min = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.penetration_bonus_max = sql_data.GetInt32(sql_num);
+            Stuff_data.magic_armor_max = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.protection_min = sql_data.GetInt32(sql_num);
+            Stuff_data.health_min_p = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.protection_max = sql_data.GetInt32(sql_num);
+            Stuff_data.health_max_p = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.protection_bonus_min = sql_data.GetInt32(sql_num);
+            Stuff_data.evasion_min = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.protection_bonus_max = sql_data.GetInt32(sql_num);
+            Stuff_data.evasion_max = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.magic_protection_min = sql_data.GetInt32(sql_num);
+            Stuff_data.close_combat_dmg_min = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.magic_protection_max = sql_data.GetInt32(sql_num);
+            Stuff_data.close_combat_dmg_max = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.health_min = sql_data.GetInt32(sql_num);
+            Stuff_data.bleed_dmg_min = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.health_max = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Stuff_data.accuracy_min = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Stuff_data.accuracy_max = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Stuff_data.lubricity_min = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Stuff_data.lubricity_max = sql_data.GetInt32(sql_num);
+            Stuff_data.bleed_dmg_max = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
             Stuff_data.satiety_min = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
@@ -845,29 +810,17 @@ public class Loading_objects_stages : MonoBehaviour
             sql_num = sql_num + 1;
             Stuff_data.endurance_max = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.robustness_min = sql_data.GetInt32(sql_num);
+            Stuff_data.stackable = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.robustness_max = sql_data.GetInt32(sql_num);
+            Stuff_data.durability = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.price_min = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Stuff_data.price_max = sql_data.GetInt32(sql_num);
+            Stuff_data.price = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
             Stuff_data.cooldown = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
             Stuff_data.duration = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Stuff_data.level_improvement = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
             Stuff_data.ability_id = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Stuff_data.ability_name = sql_data.GetString(sql_num);
-            sql_num = sql_num + 1;
-            Stuff_data.ability_game_id = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Stuff_data.ability_image_id = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Stuff_data.ability_description = sql_data.GetString(sql_num);
             sql_num = sql_num + 1;
             Stuff_data.description = sql_data.GetString(sql_num);
 
@@ -955,7 +908,7 @@ public class Loading_objects_stages : MonoBehaviour
         loading_text.text = "Загрузка Stuff_abilities";
 
         string sqlQuery = "SELECT stuff_abilities.id, stuff_abilities.type_id, stuff_abilities_type.type_name_ru, stuff_abilities.class_id, stuff_abilities_class.class_name_ru, " +
-            "stuff_abilities.ability_name, stuff_abilities.game_id, stuff_abilities.image_id, stuff_abilities.cooldown, stuff_abilities.duration, stuff_abilities.description " +
+            "stuff_abilities.ability_name, stuff_abilities.cooldown, stuff_abilities.duration, stuff_abilities.game_id, stuff_abilities.image_id, stuff_abilities.description " +
             "FROM stuff_abilities , stuff_abilities_class , stuff_abilities_type " +
             "WHERE stuff_abilities.type_id = stuff_abilities_type.id AND stuff_abilities.class_id = stuff_abilities_class.id";
         sql_data = Data_Base.SQL_Query(sqlQuery);
@@ -976,13 +929,13 @@ public class Loading_objects_stages : MonoBehaviour
             sql_num = sql_num + 1;
             Stuff_abilities.ability_name = sql_data.GetString(sql_num);
             sql_num = sql_num + 1;
-            Stuff_abilities.game_id = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Stuff_abilities.image_id = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
             Stuff_abilities.cooldown = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
             Stuff_abilities.duration = sql_data.GetInt32(sql_num);
+            sql_num = sql_num + 1;
+            Stuff_abilities.game_id = sql_data.GetInt32(sql_num);
+            sql_num = sql_num + 1;
+            Stuff_abilities.image_id = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
             Stuff_abilities.description = sql_data.GetString(sql_num);
 
@@ -1071,18 +1024,15 @@ public class Loading_objects_stages : MonoBehaviour
 
         loading_text.text = "Загрузка Bestiary";
 
-        string sqlQuery = "SELECT bestiary.id, bestiary.map_id, bestiary.bestiary_name, bestiary.point_dungeon_id, dungeon.dungeon_name, bestiary.icon_image_id, bestiary.image_id, bestiary.fight_type_id, " +
-        "bestiary_fight_type.type_name_ru, bestiary.damage_d, bestiary.damage_min, bestiary.damage_max, bestiary.damage_bonus_min, bestiary.damage_bonus_max, bestiary.magic_damage_d, bestiary.magic_damage_min, " +
-        "bestiary.magic_damage_max, bestiary.magic_damage_bonus_min, bestiary.magic_damage_bonus_max, bestiary.power_min, bestiary.power_max, bestiary.penetration_min, bestiary.penetration_max, " +
-        "bestiary.penetration_bonus_min, bestiary.penetration_bonus_max, bestiary.protection_min, bestiary.protection_max, bestiary.magic_protection_min, bestiary.magic_protection_max, bestiary.health_min, " +
-        "bestiary.health_max, bestiary.accuracy_min, bestiary.accuracy_max, bestiary.lubricity_min, bestiary.lubricity_max, bestiary.crit_chance_d, bestiary.crit_chance_min, bestiary.crit_chance_max, " +
-        "bestiary.crit_chance_bonus_min, bestiary.crit_chance_bonus_max, bestiary.crit_damage_bonus_min, bestiary.crit_damage_bonus_max, bestiary.initiative_d, bestiary.initiative_min, bestiary.initiative_max, " +
-        "bestiary.initiative_bonus_min, bestiary.initiative_bonus_max, bestiary.first_ability_proc_chance_d, bestiary.first_ability_proc_chance_min, bestiary.first_ability_proc_chance_max, " +
-        "bestiary.first_ability_cooldown_min, bestiary.first_ability_cooldown_max, bestiary.first_ability_id, bestiary.second_ability_proc_chance_d, bestiary.second_ability_proc_chance_min, " +
-        "bestiary.second_ability_proc_chance_max, bestiary.second_ability_cooldown_min, bestiary.second_ability_cooldown_max, bestiary.second_ability_id, bestiary.third_ability_proc_chance_d, " +
-        "bestiary.third_ability_proc_chance_min, bestiary.third_ability_proc_chance_max, bestiary.third_ability_cooldown_min, bestiary.third_ability_cooldown_max, bestiary.third_ability_id " +
-        "FROM bestiary , dungeon , bestiary_fight_type " +
-        "WHERE bestiary.point_dungeon_id = dungeon.id AND bestiary.fight_type_id = bestiary_fight_type.id";
+        string sqlQuery = "SELECT bestiary.id, bestiary.map_id, bestiary.bestiary_name, bestiary.point_dungeon_id, bestiary.icon_image_id, bestiary.image_id, " +
+            "bestiary.fight_type_id, bestiary_fight_type.type_name_ru, bestiary.phys_damage_min, bestiary.phys_damage_max, bestiary.damage_bonus, bestiary.magic_damage_min, " +
+            "bestiary.magic_damage_max, bestiary.magic_damage_bonus, bestiary.penetration, bestiary.phys_def, bestiary.mag_def, bestiary.health, bestiary.accuracy, " +
+            "bestiary.evasion, bestiary.crit_chance, bestiary.initiative, bestiary.ability_id, " +
+            "bestiary.first_ability_proc_chance_d, bestiary.first_ability_proc_chance, bestiary.first_ability_cooldown, bestiary.first_ability_id, " +
+            "bestiary.second_ability_proc_chance_d, bestiary.second_ability_proc_chance, bestiary.second_ability_cooldown, bestiary.second_ability_id, " +
+            "bestiary.third_ability_proc_chance_d, bestiary.third_ability_proc_chance, bestiary.third_ability_cooldown, bestiary.third_ability_id " +
+            "FROM bestiary , bestiary_fight_type " +
+            "WHERE bestiary.fight_type_id = bestiary_fight_type.id";
         sql_data = Data_Base.SQL_Query(sqlQuery);
         while (sql_data.Read())
         {
@@ -1097,8 +1047,6 @@ public class Loading_objects_stages : MonoBehaviour
             sql_num = sql_num + 1;
             Bestiary_data.point_dungeon_id = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Bestiary_data.point_dungeon_name = sql_data.GetString(sql_num);
-            sql_num = sql_num + 1;
             Bestiary_data.icon_image_id = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
             Bestiary_data.image_id = sql_data.GetInt32(sql_num);
@@ -1107,115 +1055,57 @@ public class Loading_objects_stages : MonoBehaviour
             sql_num = sql_num + 1;
             Bestiary_data.fight_type = sql_data.GetString(sql_num);
             sql_num = sql_num + 1;
-            Bestiary_data.damage_d = sql_data.GetInt32(sql_num);
+            Bestiary_data.phys_damage_min = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Bestiary_data.damage_min = sql_data.GetInt32(sql_num);
+            Bestiary_data.phys_damage_max = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Bestiary_data.damage_max = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Bestiary_data.damage_bonus_min = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Bestiary_data.damage_bonus_max = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Bestiary_data.magic_damage_d = sql_data.GetInt32(sql_num);
+            Bestiary_data.damage_bonus = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
             Bestiary_data.magic_damage_min = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
             Bestiary_data.magic_damage_max = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Bestiary_data.magic_damage_bonus_min = sql_data.GetInt32(sql_num);
+            Bestiary_data.magic_damage_bonus = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Bestiary_data.magic_damage_bonus_max = sql_data.GetInt32(sql_num);
+            Bestiary_data.penetration = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Bestiary_data.power_min = sql_data.GetInt32(sql_num);
+            Bestiary_data.phys_def = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Bestiary_data.power_max = sql_data.GetInt32(sql_num);
+            Bestiary_data.mag_def = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Bestiary_data.penetration_min = sql_data.GetInt32(sql_num);
+            Bestiary_data.health = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Bestiary_data.penetration_max = sql_data.GetInt32(sql_num);
+            Bestiary_data.accuracy = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Bestiary_data.penetration_bonus_min = sql_data.GetInt32(sql_num);
+            Bestiary_data.evasion = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Bestiary_data.penetration_bonus_max = sql_data.GetInt32(sql_num);
+            Bestiary_data.crit_chance = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Bestiary_data.protection_min = sql_data.GetInt32(sql_num);
+            Bestiary_data.initiative = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Bestiary_data.protection_max = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Bestiary_data.magic_protection_min = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Bestiary_data.magic_protection_max = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Bestiary_data.health_min = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Bestiary_data.health_max = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Bestiary_data.accuracy_min = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Bestiary_data.accuracy_max = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Bestiary_data.lubricity_min = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Bestiary_data.lubricity_max = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Bestiary_data.crit_chance_d = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Bestiary_data.crit_chance_min = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Bestiary_data.crit_chance_max = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Bestiary_data.crit_chance_bonus_min = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Bestiary_data.crit_chance_bonus_max = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Bestiary_data.crit_damage_bonus_min = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Bestiary_data.crit_damage_bonus_max = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Bestiary_data.initiative_d = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Bestiary_data.initiative_min = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Bestiary_data.initiative_max = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Bestiary_data.initiative_bonus_min = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Bestiary_data.initiative_bonus_max = sql_data.GetInt32(sql_num);
+            Bestiary_data.ability_id = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
             Bestiary_data.first_ability_proc_chance_d = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Bestiary_data.first_ability_proc_chance_min = sql_data.GetInt32(sql_num);
+            Bestiary_data.first_ability_proc_chance = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Bestiary_data.first_ability_proc_chance_max = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Bestiary_data.first_ability_cooldown_min = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Bestiary_data.first_ability_cooldown_max = sql_data.GetInt32(sql_num);
+            Bestiary_data.first_ability_cooldown = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
             Bestiary_data.first_ability_id = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
             Bestiary_data.second_ability_proc_chance_d = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Bestiary_data.second_ability_proc_chance_min = sql_data.GetInt32(sql_num);
+            Bestiary_data.second_ability_proc_chance = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Bestiary_data.second_ability_proc_chance_max = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Bestiary_data.second_ability_cooldown_min = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Bestiary_data.second_ability_cooldown_max = sql_data.GetInt32(sql_num);
+            Bestiary_data.second_ability_cooldown = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
             Bestiary_data.second_ability_id = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
             Bestiary_data.third_ability_proc_chance_d = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Bestiary_data.third_ability_proc_chance_min = sql_data.GetInt32(sql_num);
+            Bestiary_data.third_ability_proc_chance = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
-            Bestiary_data.third_ability_proc_chance_max = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Bestiary_data.third_ability_cooldown_min = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Bestiary_data.third_ability_cooldown_max = sql_data.GetInt32(sql_num);
+            Bestiary_data.third_ability_cooldown = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
             Bestiary_data.third_ability_id = sql_data.GetInt32(sql_num);
 
@@ -1271,7 +1161,7 @@ public class Loading_objects_stages : MonoBehaviour
         loading_text.text = "Загрузка Bestiary_abilities";
 
         string sqlQuery = "SELECT bestiary_abilities.id, bestiary_abilities.type_id, bestiary_abilities_type.type_name_ru, bestiary_abilities.class_id, bestiary_abilities_class.class_name_ru, " +
-            "bestiary_abilities.ability_name, bestiary_abilities.game_id, bestiary_abilities.image_id, bestiary_abilities.cooldown, bestiary_abilities.duration,  bestiary_abilities.description " +
+            "bestiary_abilities.ability_name, bestiary_abilities.cooldown, bestiary_abilities.duration, bestiary_abilities.game_id, bestiary_abilities.image_id,  bestiary_abilities.description " +
             "FROM bestiary_abilities , bestiary_abilities_class , bestiary_abilities_type " +
             "WHERE bestiary_abilities.type_id = bestiary_abilities_type.id AND bestiary_abilities.class_id = bestiary_abilities_class.id";
         sql_data = Data_Base.SQL_Query(sqlQuery);
@@ -1292,13 +1182,13 @@ public class Loading_objects_stages : MonoBehaviour
             sql_num = sql_num + 1;
             Bestiary_abilities.ability_name = sql_data.GetString(sql_num);
             sql_num = sql_num + 1;
-            Bestiary_abilities.game_id = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
-            Bestiary_abilities.image_id = sql_data.GetInt32(sql_num);
-            sql_num = sql_num + 1;
             Bestiary_abilities.cooldown = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
             Bestiary_abilities.duration = sql_data.GetInt32(sql_num);
+            sql_num = sql_num + 1;
+            Bestiary_abilities.game_id = sql_data.GetInt32(sql_num);
+            sql_num = sql_num + 1;
+            Bestiary_abilities.image_id = sql_data.GetInt32(sql_num);
             sql_num = sql_num + 1;
             Bestiary_abilities.description = sql_data.GetString(sql_num);
 
@@ -1484,17 +1374,17 @@ public class Loading_objects_stages : MonoBehaviour
 
         mask_bar_size_step_num = mask_bar_size_step_num + 1;
         mask_progress_bar.GetComponent<RectTransform>().sizeDelta = new Vector2((mask_bar_size_step_num * mask_bar_size_step), mask_progress_bar.GetComponent<RectTransform>().sizeDelta.y);
-
-        //switch (Main.action_name)
-        //{
-        //    case "new_map":
-        //        //Debug.Log("Открыть окно '\"'New_map'\"'");
-        //        SceneManager.LoadScene("4_New_map");
-        //        break;
-        //    case "loading_map":
-        //        //Debug.Log("Открыть окно '\"'Loading_map'\"'");
-        //        SceneManager.LoadScene("5_Map_Editor");
-        //        break;
-        //}
+        
+        switch (Main.action_name)
+        {
+            case "new_map":
+               //Debug.Log("Открыть окно '\"'New_map'\"'");
+                SceneManager.LoadScene("4_New_map");
+                break;
+            case "loading_map":
+               //Debug.Log("Открыть окно '\"'Loading_map'\"'");
+                SceneManager.LoadScene("5_Map_Editor");
+                break;
+        }
     }
-    }
+}
